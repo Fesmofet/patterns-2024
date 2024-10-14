@@ -20,6 +20,13 @@ const data = `city,population,area,density,country
   New York City,8537673,784,10892,United States
   Bangkok,8280925,1569,5279,Thailand`;
 
+const isValidCSV = ({ csv }) => {
+  const rows = csv.trim().split('\n');
+  if (rows?.length < 2) return false;
+  const numColumns = rows[0].split(',').length;
+  return rows.every((row) => row.split(',').length === numColumns);
+};
+
 const createObject = ({ keys, values }) => keys.reduce((acc, key, index) => {
   const value = values[index];
   const num = Number(value);
@@ -27,8 +34,8 @@ const createObject = ({ keys, values }) => keys.reduce((acc, key, index) => {
   return acc;
 }, {});
 
-const processDataString = ({ dataString }) => {
-  const rows = dataString.trim().split('\n');
+const processCSVToObjects = ({ csv }) => {
+  const rows = csv.trim().split('\n');
   const header = rows.shift();
   const keys = header.split(',').map((key) => key.trim());
 
@@ -49,30 +56,35 @@ const getMaxByKey = ({ objects, key }) => Math.max(...objects.map((obj) => obj[k
 
 const sortByKeyDESC = ({ arr, key }) => [...arr].sort((a, b) => b[key] - a[key]);
 
-const consoleData = ({ dataString, fieldToProcess, fieldToAdd }) => {
-  const objects = processDataString({ dataString });
+const consoleData = ({ csv, fieldToProcess, fieldToAdd }) => {
+  const validCSV = isValidCSV({ csv });
+  if (!validCSV) throw new Error('Invalid CSV');
+  const objects = processCSVToObjects({ csv });
   const max = getMaxByKey({ objects, key: fieldToProcess });
 
-  const objectsWithDensityPercentage = objects.map((object) => addOverallPercentage({
-    object,
-    max,
-    fieldToAdd,
-    fieldToProcess,
-  }));
+  const objectsWithDensityPercentage = objects.map(
+    (object) => addOverallPercentage({
+      object,
+      max,
+      fieldToAdd,
+      fieldToProcess,
+    }),
+  );
 
   console.table(sortByKeyDESC({ arr: objectsWithDensityPercentage, key: fieldToAdd }));
 };
 
 consoleData({
-  dataString: data,
+  csv: data,
   fieldToAdd: 'densityPercentage',
   fieldToProcess: 'density',
 });
 
 module.exports = {
   createObject,
-  processDataString,
+  processCSVToObjects,
   addOverallPercentage,
   getMaxByKey,
   sortByKeyDESC,
+  isValidCSV,
 };
