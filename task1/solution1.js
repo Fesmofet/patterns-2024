@@ -63,7 +63,7 @@ const adjustIndex = ({ index, arrayLength }) => {
   return { adjustedIndex, validIndex };
 };
 
-const consoleData = ({
+const main = ({
   csv, fieldToProcess, fieldToAdd, indexToRemove,
 }) => {
   const validCSV = isValidCSV({ csv });
@@ -86,7 +86,7 @@ const consoleData = ({
   console.table(sortByKey({ arr: objectsWithPercentage, key: fieldToAdd }));
 };
 
-consoleData({
+main({
   csv: data,
   fieldToAdd: 'densityPercentage',
   fieldToProcess: 'density',
