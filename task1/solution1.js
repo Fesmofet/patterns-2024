@@ -38,7 +38,6 @@ const processCSVToObjects = ({ csv }) => {
   const rows = csv.trim().split('\n');
   const header = rows.shift();
   const keys = header.split(',').map((key) => key.trim());
-
   return rows.map((row) => {
     const values = row.split(',').map((value) => value.trim());
     return createObject({ keys, values });
@@ -56,13 +55,21 @@ const getMaxByKey = ({ objects, key }) => Math.max(...objects.map((obj) => obj[k
 
 const sortByKeyDESC = ({ arr, key }) => [...arr].sort((a, b) => b[key] - a[key]);
 
-const consoleData = ({ csv, fieldToProcess, fieldToAdd }) => {
+const adjustIndex = ({ index, arrayLength }) => {
+  if (!Number.isInteger(index)) return { adjustedIndex: index, validIndex: false };
+  const adjustedIndex = index < 0 ? arrayLength + index : index;
+  const validIndex = adjustedIndex >= 0 && adjustedIndex < arrayLength;
+  return { adjustedIndex, validIndex };
+};
+
+const consoleData = ({
+  csv, fieldToProcess, fieldToAdd, indexToRemove,
+}) => {
   const validCSV = isValidCSV({ csv });
   if (!validCSV) throw new Error('Invalid CSV');
   const objects = processCSVToObjects({ csv });
   const max = getMaxByKey({ objects, key: fieldToProcess });
-
-  const objectsWithDensityPercentage = objects.map(
+  const objectsWithPercentage = objects.map(
     (object) => addOverallPercentage({
       object,
       max,
@@ -70,14 +77,19 @@ const consoleData = ({ csv, fieldToProcess, fieldToAdd }) => {
       fieldToProcess,
     }),
   );
-
-  console.table(sortByKeyDESC({ arr: objectsWithDensityPercentage, key: fieldToAdd }));
+  const { adjustedIndex, validIndex } = adjustIndex({
+    index: indexToRemove,
+    arrayLength: objectsWithPercentage.length,
+  });
+  if (validIndex) objectsWithPercentage.splice(adjustedIndex, 1);
+  console.table(sortByKeyDESC({ arr: objectsWithPercentage, key: fieldToAdd }));
 };
 
 consoleData({
   csv: data,
   fieldToAdd: 'densityPercentage',
   fieldToProcess: 'density',
+  indexToRemove: 0, // number | undefined (bad approach)
 });
 
 module.exports = {
