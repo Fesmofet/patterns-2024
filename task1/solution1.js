@@ -89,7 +89,7 @@ consoleData({
   csv: data,
   fieldToAdd: 'densityPercentage',
   fieldToProcess: 'density',
-  indexToRemove: 0, // number | undefined (bad approach)
+  indexToRemove: -1, // number | undefined (bad approach)
 });
 
 module.exports = {
