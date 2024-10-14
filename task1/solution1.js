@@ -59,9 +59,9 @@ const getMaxByKey = ({ objects, key }) => Math.max(...objects.map((obj) => obj[k
 const sortByKey = ({ arr, key, order = 'DESC' }) => [...arr]
   .sort((a, b) => (order === 'DESC' ? b[key] - a[key] : a[key] - b[key]));
 
-const adjustIndex = ({ index, arrayLength }) => {
-  if (!Number.isInteger(index)) return { adjustedIndex: index, validIndex: false };
-  const adjustedIndex = index < 0 ? arrayLength + index : index;
+const adjustIndex = ({ indexToRemove, arrayLength }) => {
+  if (!Number.isInteger(indexToRemove)) return { adjustedIndex: indexToRemove, validIndex: false };
+  const adjustedIndex = indexToRemove < 0 ? arrayLength + indexToRemove : indexToRemove;
   const validIndex = adjustedIndex >= 0 && adjustedIndex < arrayLength;
   return { adjustedIndex, validIndex };
 };
@@ -82,7 +82,7 @@ const main = ({ csv }) => {
     }),
   );
   const { adjustedIndex, validIndex } = adjustIndex({
-    index: indexToRemove,
+    indexToRemove,
     arrayLength: objectsWithPercentage.length,
   });
   if (validIndex) objectsWithPercentage.splice(adjustedIndex, 1);
