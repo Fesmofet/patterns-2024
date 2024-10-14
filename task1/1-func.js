@@ -1,13 +1,3 @@
-// Tasks for rewriting:
-//   - Apply optimizations of computing resources: processor, memory
-//   - Minimize cognitive complexity
-//   - Respect SRP and SoC
-//   - Improve readability (understanding), reliability
-//   - Optimize for maintainability, reusability, flexibility
-//   - Make code testable
-//   - Implement simple unittests without frameworks
-//   - Try to implement in multiple paradigms: OOP, FP, procedural, mixed
-
 const data = `city,population,area,density,country
   Shanghai,24256800,6340,3826,China
   Delhi,16787941,1484,11313,India
@@ -66,7 +56,16 @@ const adjustIndex = ({ indexToRemove, arrayLength }) => {
   return { adjustedIndex, validIndex };
 };
 
-const main = ({ csv }) => {
+const addFieldToObjects = ({ objects, fieldToProcess, fieldToAdd }) => {
+  const max = getMaxByKey({ objects, key: fieldToProcess });
+  return objects.map(
+    (object) => addOverallPercentage({
+      object, max, fieldToAdd, fieldToProcess,
+    }),
+  );
+};
+
+const logCSV = ({ csv }) => {
   const fieldToProcess = 'density';
   const fieldToAdd = 'densityPercentage';
   const indexToRemove = -1;
@@ -75,12 +74,8 @@ const main = ({ csv }) => {
   if (!validCSV) return console.log('Invalid CSV');
 
   const objects = processCSVToObjects({ csv });
-  const max = getMaxByKey({ objects, key: fieldToProcess });
-  const objectsWithPercentage = objects.map(
-    (object) => addOverallPercentage({
-      object, max, fieldToAdd, fieldToProcess,
-    }),
-  );
+  const objectsWithPercentage = addFieldToObjects({ objects, fieldToAdd, fieldToProcess });
+
   const { adjustedIndex, validIndex } = adjustIndex({
     indexToRemove,
     arrayLength: objectsWithPercentage.length,
@@ -89,7 +84,7 @@ const main = ({ csv }) => {
   console.table(sortByKey({ arr: objectsWithPercentage, key: fieldToAdd }));
 };
 
-main({ csv: data });
+logCSV({ csv: data });
 
 module.exports = {
   createObject,
