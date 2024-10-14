@@ -53,7 +53,8 @@ const addOverallPercentage = ({
 
 const getMaxByKey = ({ objects, key }) => Math.max(...objects.map((obj) => obj[key]));
 
-const sortByKeyDESC = ({ arr, key }) => [...arr].sort((a, b) => b[key] - a[key]);
+const sortByKey = ({ arr, key, order = 'DESC' }) => [...arr]
+  .sort((a, b) => (order === 'DESC' ? b[key] - a[key] : a[key] - b[key]));
 
 const adjustIndex = ({ index, arrayLength }) => {
   if (!Number.isInteger(index)) return { adjustedIndex: index, validIndex: false };
@@ -82,7 +83,7 @@ const consoleData = ({
     arrayLength: objectsWithPercentage.length,
   });
   if (validIndex) objectsWithPercentage.splice(adjustedIndex, 1);
-  console.table(sortByKeyDESC({ arr: objectsWithPercentage, key: fieldToAdd }));
+  console.table(sortByKey({ arr: objectsWithPercentage, key: fieldToAdd }));
 };
 
 consoleData({
@@ -97,6 +98,6 @@ module.exports = {
   processCSVToObjects,
   addOverallPercentage,
   getMaxByKey,
-  sortByKeyDESC,
+  sortByKey,
   isValidCSV,
 };

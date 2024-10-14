@@ -1,6 +1,6 @@
 const assert = require('assert');
 const {
-  createObject, processCSVToObjects, addOverallPercentage, sortByKeyDESC, getMaxByKey, isValidCSV,
+  createObject, processCSVToObjects, addOverallPercentage, sortByKey, getMaxByKey, isValidCSV,
 } = require('./solution1');
 
 const testIsValidCSV = () => {
@@ -152,7 +152,7 @@ const testSortByKeyDESC = () => {
       { city: 'CityA', density: 300 },
     ];
 
-    const result = sortByKeyDESC({ arr, key: 'density' });
+    const result = sortByKey({ arr, key: 'density', order: 'DESC' });
     assert.deepStrictEqual(result, expected, 'sortByKeyDESC should sort array in descending order by key');
     console.log('testSortByKeyDESC: PASSED');
   } catch (error) {
