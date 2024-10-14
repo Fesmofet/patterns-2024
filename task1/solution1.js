@@ -66,7 +66,7 @@ const consoleData = ({
   csv, fieldToProcess, fieldToAdd, indexToRemove,
 }) => {
   const validCSV = isValidCSV({ csv });
-  if (!validCSV) throw new Error('Invalid CSV');
+  if (!validCSV) return console.log('Invalid CSV');
   const objects = processCSVToObjects({ csv });
   const max = getMaxByKey({ objects, key: fieldToProcess });
   const objectsWithPercentage = objects.map(
