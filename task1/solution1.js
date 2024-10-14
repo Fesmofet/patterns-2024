@@ -34,10 +34,16 @@ const createObject = ({ keys, values }) => keys.reduce((acc, key, index) => {
   return acc;
 }, {});
 
-const processCSVToObjects = ({ csv }) => {
+const getKeysAndRows = ({ csv }) => {
   const rows = csv.trim().split('\n');
   const header = rows.shift();
   const keys = header.split(',').map((key) => key.trim());
+  return { keys, rows };
+};
+
+const processCSVToObjects = ({ csv }) => {
+  const { keys, rows } = getKeysAndRows({ csv });
+
   return rows.map((row) => {
     const values = row.split(',').map((value) => value.trim());
     return createObject({ keys, values });
