@@ -13,6 +13,7 @@ const {
   addFieldToObjects,
   removeObjectAtAdjustedIndex,
   compose,
+  processCSV,
 } = require('./1-func');
 
 describe('isValidCSV', () => {
@@ -309,5 +310,65 @@ describe('compose', () => {
     const composedFunction = compose();
     const result = composedFunction(5);
     assert.strictEqual(result, 5);
+  });
+});
+
+const data = `city,population,area,density,country
+Shanghai,24256800,6340,3826,China
+Delhi,16787941,1484,11313,India
+Lagos,16060303,1171,13712,Nigeria
+Istanbul,14160467,5461,2593,Turkey
+Tokyo,13513734,2191,6168,Japan
+Sao Paulo,12038175,1521,7914,Brazil
+Mexico City,8874724,1486,5974,Mexico
+London,8673713,1572,5431,United Kingdom
+New York City,8537673,784,10892,United States
+Bangkok,8280925,1569,5279,Thailand`;
+
+describe('processCSV function', () => {
+  it('should process valid CSV input and return the expected data', () => {
+    const result = processCSV({ csv: data });
+
+    // Prepare expected data
+    const expectedData = [
+      {
+        city: 'Lagos', population: 16060303, area: 1171, density: 13712, country: 'Nigeria', densityPercentage: 100,
+      },
+      {
+        city: 'Delhi', population: 16787941, area: 1484, density: 11313, country: 'India', densityPercentage: 83,
+      },
+      {
+        city: 'New York City', population: 8537673, area: 784, density: 10892, country: 'United States', densityPercentage: 79,
+      },
+      {
+        city: 'Sao Paulo', population: 12038175, area: 1521, density: 7914, country: 'Brazil', densityPercentage: 58,
+      },
+      {
+        city: 'Tokyo', population: 13513734, area: 2191, density: 6168, country: 'Japan', densityPercentage: 45,
+      },
+      {
+        city: 'Mexico City', population: 8874724, area: 1486, density: 5974, country: 'Mexico', densityPercentage: 44,
+      },
+      {
+        city: 'London', population: 8673713, area: 1572, density: 5431, country: 'United Kingdom', densityPercentage: 40,
+      },
+      {
+        city: 'Shanghai', population: 24256800, area: 6340, density: 3826, country: 'China', densityPercentage: 28,
+      },
+      {
+        city: 'Istanbul', population: 14160467, area: 5461, density: 2593, country: 'Turkey', densityPercentage: 19,
+      },
+    ];
+
+    assert.deepStrictEqual(result, expectedData, 'Processed data should match expected data');
+  });
+
+  it('should return an Error object for invalid CSV input', () => {
+    const invalidData = 'invalid,csv,data';
+    const result = processCSV({ csv: invalidData });
+
+    // Check that result is an instance of Error and has the correct message
+    assert.ok(result instanceof Error, 'Result should be an Error object');
+    assert.strictEqual(result.message, 'Invalid CSV', 'Error message should be "Invalid CSV"');
   });
 });

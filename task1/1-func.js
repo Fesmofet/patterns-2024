@@ -80,7 +80,7 @@ const removeObjectAtAdjustedIndex = ({ indexToRemove, objects }) => {
 
 const compose = (...functions) => (input) => functions.reduce((acc, fn) => fn(acc), input);
 
-const logCSV = ({ csv, config = {} }) => {
+const processCSV = ({ csv, config = {} }) => {
   const {
     fieldToProcess = 'density',
     fieldToAdd = 'densityPercentage',
@@ -88,19 +88,17 @@ const logCSV = ({ csv, config = {} }) => {
   } = config;
 
   const validCSV = isValidCSV({ csv });
-  if (!validCSV) return console.log('Invalid CSV');
+  if (!validCSV) return new Error('Invalid CSV');
 
-  const processedObjects = compose(
+  return compose(
     processCSVToObjects,
     (objects) => addFieldToObjects({ objects, fieldToAdd, fieldToProcess }),
     (objects) => removeObjectAtAdjustedIndex({ indexToRemove, objects }),
     (arr) => sortByKey({ arr, key: fieldToAdd }),
   )({ csv });
-
-  console.table(processedObjects);
 };
 
-// logCSV({ csv: data });
+// console.table(processCSV({ csv: data }));
 
 module.exports = {
   createObject,
@@ -114,4 +112,5 @@ module.exports = {
   addFieldToObjects,
   removeObjectAtAdjustedIndex,
   compose,
+  processCSV,
 };

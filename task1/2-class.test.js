@@ -6,7 +6,6 @@ const {
   CSVValidator,
   DataProcessor,
   Sorter,
-  Logger,
   CSVController,
 } = require('./2-class');
 
@@ -140,30 +139,16 @@ describe('Sorter', () => {
   });
 });
 
-describe('Logger', () => {
-  it('should log data without errors', () => {
-    const data = [{ a: 1 }, { a: 2 }];
-
-    assert.doesNotThrow(() => {
-      Logger.log(data);
-    });
-  });
-});
-
 describe('CSVController', () => {
   it('should execute without errors and process data correctly', () => {
     const controller = new CSVController(validCSV);
-    let consoleOutput = [];
-    const originalConsoleTable = console.table;
-    console.table = (output) => {
-      consoleOutput = output;
-    };
-    controller.execute();
-    console.table = originalConsoleTable;
-    assert.ok(Array.isArray(consoleOutput));
-    assert.strictEqual(consoleOutput.length, 1);
-    const [firstEntry] = consoleOutput;
-    assert.strictEqual(firstEntry.densityPercentage, 34);
-    assert.strictEqual(consoleOutput.some((item) => item.city === 'Shanghai'), true);
+    const result = controller.execute();
+    assert.ok(Array.isArray(result), 'Result should be an array');
+    assert.strictEqual(result.length, 1, 'Result array should have length 1');
+    const [firstEntry] = result;
+    assert.strictEqual(firstEntry.city, 'Shanghai', 'First entry city should be Shanghai');
+    assert.strictEqual(firstEntry.densityPercentage, 34, 'Density percentage should be 34');
+    const containsDelhi = result.some((item) => item.city === 'Delhi');
+    assert.strictEqual(containsDelhi, false, 'Delhi should be removed from the result');
   });
 });

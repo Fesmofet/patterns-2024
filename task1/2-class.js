@@ -88,12 +88,6 @@ class Sorter {
   }
 }
 
-class Logger {
-  static log(input) {
-    console.table(input);
-  }
-}
-
 class CSVController {
   constructor(csv) {
     this.csv = csv;
@@ -105,8 +99,7 @@ class CSVController {
 
   execute() {
     if (!this.validator.validate(this.csv)) {
-      Logger.log('Invalid CSV data');
-      return;
+      return new Error('Invalid CSV');
     }
 
     this.parser.parse();
@@ -119,19 +112,18 @@ class CSVController {
       this.processor.fieldToAdd,
     );
 
-    Logger.log(sortedObjects);
+    return sortedObjects;
   }
 }
 
 const csvController = new CSVController(data);
 
-// csvController.execute();
+// console.table(csvController.execute());
 
 module.exports = {
   CSVParser,
   CSVValidator,
   DataProcessor,
   Sorter,
-  Logger,
   CSVController,
 };
