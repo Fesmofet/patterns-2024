@@ -65,6 +65,21 @@ const addFieldToObjects = ({ objects, fieldToProcess, fieldToAdd }) => {
   );
 };
 
+const removeObjectAtAdjustedIndex = ({ indexToRemove, objects }) => {
+  const { adjustedIndex, validIndex } = adjustIndex({
+    indexToRemove,
+    arrayLength: objects.length,
+  });
+  if (validIndex) {
+    const newObjects = [...objects];
+    newObjects.splice(adjustedIndex, 1);
+    return newObjects;
+  }
+  return objects;
+};
+
+const compose = (...functions) => (input) => functions.reduce((acc, fn) => fn(acc), input);
+
 const logCSV = ({ csv }) => {
   const fieldToProcess = 'density';
   const fieldToAdd = 'densityPercentage';
@@ -73,15 +88,14 @@ const logCSV = ({ csv }) => {
   const validCSV = isValidCSV({ csv });
   if (!validCSV) return console.log('Invalid CSV');
 
-  const objects = processCSVToObjects({ csv });
-  const objectsWithPercentage = addFieldToObjects({ objects, fieldToAdd, fieldToProcess });
+  const processedObjects = compose(
+    processCSVToObjects,
+    (objects) => addFieldToObjects({ objects, fieldToAdd, fieldToProcess }),
+    (objects) => removeObjectAtAdjustedIndex({ indexToRemove, objects }),
+    (arr) => sortByKey({ arr, key: fieldToAdd }),
+  )({ csv });
 
-  const { adjustedIndex, validIndex } = adjustIndex({
-    indexToRemove,
-    arrayLength: objectsWithPercentage.length,
-  });
-  if (validIndex) objectsWithPercentage.splice(adjustedIndex, 1);
-  console.table(sortByKey({ arr: objectsWithPercentage, key: fieldToAdd }));
+  console.table(processedObjects);
 };
 
 logCSV({ csv: data });
