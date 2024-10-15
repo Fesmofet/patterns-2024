@@ -87,8 +87,7 @@ const processCSV = ({ csv, config = {} }) => {
     indexToRemove = -1,
   } = config;
 
-  const validCSV = isValidCSV({ csv });
-  if (!validCSV) throw new Error('Invalid CSV');
+  if (!isValidCSV({ csv })) throw new Error('Invalid CSV');
 
   return compose(
     processCSVToObjects,
