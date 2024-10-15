@@ -151,4 +151,10 @@ describe('CSVController', () => {
     const containsDelhi = result.some((item) => item.city === 'Delhi');
     assert.strictEqual(containsDelhi, false, 'Delhi should be removed from the result');
   });
+
+  it('should throw an Error when CSV is invalid', () => {
+    const controller = new CSVController(invalidCSV);
+
+    assert.throws(() => { controller.execute(); }, /Invalid CSV/);
+  });
 });

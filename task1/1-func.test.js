@@ -363,12 +363,9 @@ describe('processCSV function', () => {
     assert.deepStrictEqual(result, expectedData, 'Processed data should match expected data');
   });
 
-  it('should return an Error object for invalid CSV input', () => {
+  it('should throw Erroe', () => {
     const invalidData = 'invalid,csv,data';
-    const result = processCSV({ csv: invalidData });
 
-    // Check that result is an instance of Error and has the correct message
-    assert.ok(result instanceof Error, 'Result should be an Error object');
-    assert.strictEqual(result.message, 'Invalid CSV', 'Error message should be "Invalid CSV"');
+    assert.throws(() => { processCSV({ csv: invalidData }); }, /Invalid CSV/);
   });
 });

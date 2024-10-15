@@ -98,9 +98,7 @@ class CSVController {
   }
 
   execute() {
-    if (!this.validator.validate(this.csv)) {
-      return new Error('Invalid CSV');
-    }
+    if (!this.validator.validate(this.csv)) throw new Error('Invalid CSV');
 
     this.parser.parse();
     let objects = this.parser.toObjects();

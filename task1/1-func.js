@@ -88,7 +88,7 @@ const processCSV = ({ csv, config = {} }) => {
   } = config;
 
   const validCSV = isValidCSV({ csv });
-  if (!validCSV) return new Error('Invalid CSV');
+  if (!validCSV) throw new Error('Invalid CSV');
 
   return compose(
     processCSVToObjects,
