@@ -41,7 +41,7 @@ const addOverallPercentage = ({
   object, max, fieldToAdd, fieldToProcess,
 }) => ({
   ...object,
-  [fieldToAdd]: Math.round((object[fieldToProcess] * 100) / max),
+  [fieldToAdd]: max !== 0 ? Math.round((object[fieldToProcess] * 100) / max) : 0,
 });
 
 const getMaxByKey = ({ objects, key }) => Math.max(...objects.map((obj) => obj[key]));
@@ -100,7 +100,7 @@ const logCSV = ({ csv, config = {} }) => {
   console.table(processedObjects);
 };
 
-logCSV({ csv: data });
+// logCSV({ csv: data });
 
 module.exports = {
   createObject,
@@ -109,4 +109,9 @@ module.exports = {
   getMaxByKey,
   sortByKey,
   isValidCSV,
+  getKeysAndRows,
+  adjustIndex,
+  addFieldToObjects,
+  removeObjectAtAdjustedIndex,
+  compose,
 };
