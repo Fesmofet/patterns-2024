@@ -80,10 +80,12 @@ const removeObjectAtAdjustedIndex = ({ indexToRemove, objects }) => {
 
 const compose = (...functions) => (input) => functions.reduce((acc, fn) => fn(acc), input);
 
-const logCSV = ({ csv }) => {
-  const fieldToProcess = 'density';
-  const fieldToAdd = 'densityPercentage';
-  const indexToRemove = -1;
+const logCSV = ({ csv, config = {} }) => {
+  const {
+    fieldToProcess = 'density',
+    fieldToAdd = 'densityPercentage',
+    indexToRemove = -1,
+  } = config;
 
   const validCSV = isValidCSV({ csv });
   if (!validCSV) return console.log('Invalid CSV');
